@@ -22,6 +22,7 @@ public class Sound {
 
          // 볼륨 조정 (음수 값: 줄이기, 양수 값: 늘리기)
             volumeControl.setValue(volume);
+            clip.start();
 		}
     	catch (Exception e) {
     		System.err.println("err : " + e);
