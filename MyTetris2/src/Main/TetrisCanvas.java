@@ -29,7 +29,8 @@ public class TetrisCanvas extends JPanel implements Runnable, KeyListener, Compo
 	private Dimension dim;
 	private TetrisPreview preview;
 	private MyTetris myTetris;
-	private Sound bgmsound = new Sound();
+	private Sound bgmsound = new Sound("sound/TetrisBGM.wav", -40);
+
 	public TetrisCanvas(MyTetris t) {
 		this.myTetris = t;
 		data = new TetrisData();
@@ -62,7 +63,8 @@ public class TetrisCanvas extends JPanel implements Runnable, KeyListener, Compo
 		stop = false;
 		requestFocus();
 		repaint();
-		bgmsound.play("sound/TetrisBGM.wav", -40);
+		bgmsound.play();
+		bgmsound.loop();
 	}
 	
 	public void stop() {
@@ -152,6 +154,10 @@ public class TetrisCanvas extends JPanel implements Runnable, KeyListener, Compo
 				if(makeNew){ // 새로운 테트리스 조각 만들기 
 					if (newBlock == null) {
 						newBlock = createBlock();
+					}
+					else {
+						Sound effectsound = new Sound("sound/blockbottom.wav", 0);
+						effectsound.play();
 					}
 					current = newBlock;
 					newBlock = createBlock();

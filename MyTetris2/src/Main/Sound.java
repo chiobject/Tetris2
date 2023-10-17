@@ -6,13 +6,8 @@ import javax.sound.sampled.*;
 public class Sound {
     private Clip clip;
 
-    // 테트리스 노래 실행
-    public void loop() {
-            clip.loop(Clip.LOOP_CONTINUOUSLY);  // 노래 무한 재생
-    }
-    
-    public void play(String MusicPath, float volume) {
-		try {
+    public Sound(String MusicPath, float volume) {
+    	try {
 			File file = new File(MusicPath); // 테트리스 노래 지정
 			clip = AudioSystem.getClip(); // Clip 객체 생성
 			clip.open(AudioSystem.getAudioInputStream(file)); // 오디오 파일 열기
@@ -22,14 +17,18 @@ public class Sound {
 
          // 볼륨 조정 (음수 값: 줄이기, 양수 값: 늘리기)
             volumeControl.setValue(volume);
-            clip.start();
+		} catch(Exception e) {
+			System.err.println("err : " + e);
 		}
-    	catch (Exception e) {
-    		System.err.println("err : " + e);
-    	}
+    }
+    // 테트리스 노래 실행
+    public void loop() {
+            clip.loop(Clip.LOOP_CONTINUOUSLY);  // 노래 무한 재생
     }
     
-    
+    public void play() {
+            clip.start();
+    }
     
     // 테트리스 소리 초기화
     public void stop() {
