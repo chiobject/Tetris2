@@ -9,14 +9,18 @@ public abstract class Piece {
 	protected int c[];   // X축 좌표 배열
 	protected TetrisData data;  // 테트리스 내부 데이터
 	protected Point center; // 조각의 중심 좌표
-	public Piece(TetrisData data) {
+	protected int type, roteType;
+	
+	public Piece(TetrisData data, int type, int roteType) {
 		r = new int[4];
 		c = new int[4];
 		this.data = data;
+		this.type = type;
+		this.roteType = roteType;
 		center = new Point(5,0);
 	}
-	public abstract int getType();
-	public abstract int roteType();
+	public int getType() {return type;};
+	public int roteType() {return roteType;};
  
 	public int getX() { return center.x; }
 	public int getY() { return center.y; }
@@ -27,7 +31,7 @@ public abstract class Piece {
 		if(getMinY() + y <= 0) { // 게임 종료 상황
 			value = true;
 		}
- 
+		
 		for(int i=0; i < 4; i++) {
 			data.setAt(y + r[i], x + c[i], getType());
 		}
@@ -144,6 +148,37 @@ public abstract class Piece {
 			int temp = c[i];
 			c[i] = -r[i];
 			r[i] = temp;
+		}
+	}
+	
+	public String saveNetworkPiece() {
+		String piece =
+		r[0] + "." + r[1] + "." + r[2] + "." + r[3] + "." +
+		c[0] + "." + c[1] + "." + c[2] + "." + c[3] + "." +
+		center.x + "." + center.y + "." + getType();
+		return piece;
+	}
+	
+	public void loadNetworkPiece(String str) {
+		String[] fixedStr = str.split("\\.");
+		for(int i = 0; i < 11; i++) {
+			switch(i/4) {
+			case 0:	// r 목록
+				r[i] = Integer.parseInt(fixedStr[i]);	
+				break;
+			case 1:		// c 목록
+				c[i%4] = Integer.parseInt(fixedStr[i]);	
+				break;
+			case 2:	// x,y좌표 및 회전 타입
+				if(i%4 == 0) {
+					center.x = Integer.parseInt(fixedStr[i]);
+				} else if(i%4 == 1){
+					center.y = Integer.parseInt(fixedStr[i]);
+				} else {
+					type = Integer.parseInt(fixedStr[i]);
+				}
+				break;
+			}		
 		}
 	}
 }
