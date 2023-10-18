@@ -34,7 +34,11 @@ public class Sound {
     public void stop() {
         if (clip != null) {  // clip이 null이 아닌 경우에만 실행
             clip.stop();  // 노래 재생 중지
-            clip.close();  // clip 리소스 해제
+        }
+    }
+    public void close() {
+    	if (clip != null) {  // clip이 null이 아닌 경우에만 실행
+            clip.close();  // 노래 리소스 해제
         }
     }
 }

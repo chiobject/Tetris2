@@ -54,7 +54,7 @@ public class MyTetris extends JFrame{
 			public void actionPerformed(ActionEvent e) {
 				tetrisCanvas.start();
 				netCanvas.start();
-				startItem.setEnabled(false);
+//				startItem.setEnabled(false);
 			}
 		});
 		

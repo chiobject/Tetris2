@@ -10,7 +10,7 @@ public abstract class Piece {
 	protected TetrisData data;  // 테트리스 내부 데이터
 	protected Point center; // 조각의 중심 좌표
 	protected int type, roteType;
-	
+	protected Sound effectsound = new Sound("sound/blockbottom.wav", 0);
 	public Piece(TetrisData data, int type, int roteType) {
 		r = new int[4];
 		c = new int[4];
@@ -112,10 +112,14 @@ public abstract class Piece {
 			if(isOverlap(DOWN) != true) {
 				center.y++;
 			} else {
+				effectsound.play();
 				return true;
 			}
 		} 
-		else { return true; }
+		else {
+				effectsound.play();
+				return true; 
+			}
 		return false;
 	}
 
