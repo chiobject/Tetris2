@@ -10,7 +10,7 @@ public class TetrisPreview extends JPanel {
 	 */
 	private static final long serialVersionUID = 1L;
 	private TetrisData data;
-	private Piece   current = null;
+	protected Piece   current = null;
 	public TetrisPreview(TetrisData data) {
 		this.data = data;
 		repaint();
@@ -26,7 +26,7 @@ public class TetrisPreview extends JPanel {
 	public void paint(Graphics g) {
 		super.paint(g);
 		
-		//쌓인 조각들 그리기
+		//프리뷰 격자 그리기
 		for(int i = 0; i < 4; i++) {
 			for(int k = 0; k < 4; k++) {
 				if(data.getAt(i, k) == 0) {
@@ -37,8 +37,8 @@ public class TetrisPreview extends JPanel {
 				}
 			}
 		}
-		//System.out.println(current);
-		// 현재 내려오고 있는 테트리스 조각 그리
+//		System.out.println(current);
+		// 프리뷰 블록 그리기
 		if(current != null){
 			for(int i = 0; i < 4; i++) {
 				g.setColor(Constant.getColor(current.getType()));

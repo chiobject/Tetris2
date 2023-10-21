@@ -10,6 +10,7 @@ public class TetrisNetworkPreview extends JPanel {
 	 */
 	private static final long serialVersionUID = 1L;
 	private TetrisData data;
+	protected Piece   current = null;
 	public TetrisNetworkPreview(TetrisData data) {
 		this.data = data;
 		repaint();
@@ -31,6 +32,14 @@ public class TetrisNetworkPreview extends JPanel {
 			}
 		}
 		//System.out.println(current);
-		// 현재 내려오고 있는 테트리스 조각 그리
+		// 프리뷰 블록 그리기
+				if(current != null){
+					for(int i = 0; i < 4; i++) {
+						g.setColor(Constant.getColor(current.getType()));
+						g.fill3DRect(Constant.margin/2 + Constant.w * (1+current.c[i]), 
+								Constant.margin/2 + Constant.w * (2+current.r[i]), 
+								Constant.w, Constant.w, true);
+					}
+				}
 	}
 }

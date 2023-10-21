@@ -27,7 +27,7 @@ public class TetrisCanvas extends JPanel implements Runnable, KeyListener, Compo
 	private Image offscreen; 
 	//화면의 크기를 저장하는 변수
 	private Dimension dim;
-	private TetrisPreview preview;
+	protected TetrisPreview preview;
 	private MyTetris myTetris;
 	private String Path = "sound/TetrisBGM.wav";
 	private Sound bgmsound;

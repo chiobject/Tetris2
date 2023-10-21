@@ -15,8 +15,9 @@ public class TetrisClient extends Thread {
 	private  BufferedReader  i;
     private  PrintWriter     o;
     private TetrisNetworkCanvas netCanvas;
+    private TetrisNetworkPreview netPreview;
     private TetrisCanvas tetrisCanvas;
-    private String key, current;
+    private String key, current, preview;
     public TetrisClient(TetrisCanvas tetrisCanvas, TetrisNetworkCanvas netCanvas, String host, int port) {
     	this.tetrisCanvas = tetrisCanvas;
     	this.netCanvas = netCanvas;
@@ -32,10 +33,11 @@ public class TetrisClient extends Thread {
     	String data = tetrisCanvas.getData().saveNetworkData();
     	if (tetrisCanvas.current != null) {
     		current = tetrisCanvas.current.saveNetworkPiece();
+    		preview = tetrisCanvas.preview.current.saveNetworkPiece();
     	}
     	System.out.println("current :" + current);
 		System.out.println("send: "+data);
-		o.println(key + data+";" + current);
+		o.println(key + data+";" + current + ";" + preview);
     }
     
 	public void run() {
@@ -56,9 +58,15 @@ public class TetrisClient extends Thread {
 					String checkKey = parsedData[0]+";";
 					if(!checkKey.equals(key)) {
 						netCanvas.getData().loadNetworkData(parsedData[1]);
+						
 						Piece tmpP = new Bar(new TetrisData());
 						tmpP.loadNetworkPiece(parsedData[2]);
 						netCanvas.current = tmpP;
+						
+						Piece tmpPP = new Bar(new TetrisData());
+						tmpPP.loadNetworkPiece(parsedData[3]);
+						netPreview.current = tmpPP;
+						
 					}
 				}
 			}
