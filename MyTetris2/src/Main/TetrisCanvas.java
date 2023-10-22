@@ -19,7 +19,7 @@ public class TetrisCanvas extends JPanel implements Runnable, KeyListener, Compo
 	protected Thread worker;
 	protected TetrisData data;
 	protected boolean stop, makeNew;
-	protected Piece current;
+	protected Piece current, hold;
 	protected Piece newBlock = null;
 	//그래픽스 함수를 사용하기 위한 클래스
 	private Graphics bufferGraphics = null;
@@ -29,8 +29,12 @@ public class TetrisCanvas extends JPanel implements Runnable, KeyListener, Compo
 	private Dimension dim;
 	protected TetrisPreview preview;
 	private MyTetris myTetris;
-	private String Path = "sound/TetrisBGM.wav";
+	private String bgmPath = "sound/TetrisBGM.wav";
 	private Sound bgmsound;
+	private String effectPath = "sound/blockbottom.wav";
+	private Sound effectsound;
+	
+	
 	public TetrisCanvas(MyTetris t) {
 		this.myTetris = t;
 		data = new TetrisData();
@@ -61,9 +65,10 @@ public class TetrisCanvas extends JPanel implements Runnable, KeyListener, Compo
 		worker.start();
 		makeNew = true;
 		stop = false;
+		preview.hold=null;
 		requestFocus();
 		repaint();
-		bgmsound = new Sound(Path,-40); 
+		bgmsound = new Sound(bgmPath,-20); 
 		bgmsound.play();
 		bgmsound.loop();
 	}
@@ -71,6 +76,7 @@ public class TetrisCanvas extends JPanel implements Runnable, KeyListener, Compo
 	public void stop() {
 		stop = true;
 		current = null;
+		newBlock = null;
 		bgmsound.stop();
 		bgmsound.close();
 	}
@@ -154,9 +160,13 @@ public class TetrisCanvas extends JPanel implements Runnable, KeyListener, Compo
 		while(!stop) {
 			try {
 				if(makeNew){ // 새로운 테트리스 조각 만들기 
+					if(newBlock != null && preview.ishold == false) {
+						effectsound = new Sound(effectPath, 0);
+						effectsound.play();
+					}
 					if (newBlock == null) {
 						newBlock = createBlock();
-					}
+					} 
 					current = newBlock;
 					newBlock = createBlock();
 					preview.setCurrentBlock(newBlock);
@@ -169,12 +179,13 @@ public class TetrisCanvas extends JPanel implements Runnable, KeyListener, Compo
 							int score = data.getLine() * 175 * Constant.level;
 							JOptionPane.showMessageDialog(this,"게임끝\n점수 : " + score);
 						}
+						preview.ishold=false;
 						current = null;
-						data.removeLines();
 						continue;
 					}
 				}
 				repaint();
+				data.removeLines();
 				Thread.sleep(Constant.interval/Constant.level);
 			} catch(ArrayIndexOutOfBoundsException e) {
 				stop();
@@ -198,27 +209,31 @@ public class TetrisCanvas extends JPanel implements Runnable, KeyListener, Compo
 			current.moveLeft();
 			repaint();
 			break;
+			
 		case KeyEvent.VK_RIGHT:  // 오른쪽 화살표
 			current.moveRight();
 			repaint();
 			break;
+			
 		case KeyEvent.VK_UP:  // 윗쪽 화살표
 			current.rotate();
 			repaint();
 			break;
+			
 		case KeyEvent.VK_DOWN:  // 아랫쪽 화살표
 			boolean temp = current.moveDown();
 			if(temp){
 				makeNew = true;
+				preview.ishold=false;
 				if(current.copy()){
 					stop();
 					int score = data.getLine() * 175 * Constant.level;
 					JOptionPane.showMessageDialog(this,"게임끝\n점수 : " + score);
 				}
 			}
-			data.removeLines();
 			repaint();
 			break;
+			
 		case KeyEvent.VK_SPACE:
 			while(!current.moveDown()) { }
 			makeNew = true;
@@ -227,10 +242,32 @@ public class TetrisCanvas extends JPanel implements Runnable, KeyListener, Compo
 				int score = data.getLine() * 175 * Constant.level;
 				JOptionPane.showMessageDialog(this,"게임끝\n점수 : " + score);
 			}
+			preview.ishold=false;
 			current = null;
-			data.removeLines();
 			worker.interrupt();
 			repaint();
+			break;
+			
+		case 67 :
+			if (preview.hold == null) {
+				preview.hold = current;	//현재 piece을 hold
+				makeNew = true;	// piece 갱신
+				preview.ishold = true;	// hold 기능 비활성화(TetrisData에서 활성화)
+				preview.repaint();
+				worker.interrupt();
+			}
+			
+			else if (preview.hold != null && preview.ishold != true) {
+				Piece temp1;
+				temp1 = current;	//현재 piece을 hold
+				current = preview.hold;	// piece 갱신
+				preview.hold = temp1;
+				preview.ishold = true;	// hold 기능 비활성화
+				preview.repaint();
+				worker.interrupt();
+			}
+			preview.hold.center.x = 5;	// 블록 위치 중앙으로 이동
+			preview.hold.center.y = 0; 	//현재 작업 중단
 			break;
 		}
 	}

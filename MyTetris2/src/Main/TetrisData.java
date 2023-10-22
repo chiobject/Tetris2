@@ -19,9 +19,10 @@ public class TetrisData {
 	public void setAt(int x, int y, int v) {
 		try {
 			data[x][y] = v;
+			
 		}
 		catch(java.lang.ArrayIndexOutOfBoundsException e) {
-			
+			System.out.println("dfsdafds");
 		}
 	}
 	

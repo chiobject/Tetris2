@@ -16,7 +16,7 @@ public class TetrisNetworkCanvas extends JPanel implements Runnable, ComponentLi
 	protected TetrisData data;
 	protected boolean stop, makeNew;
 	protected Piece   current;
-	
+	protected TetrisNetworkPreview preview;
 	//그래픽스 함수를 사용하기 위한 클래스
 	private Graphics bufferGraphics = null;
 	//bufferGraphics로 그림을 그릴 때 실제로 그려지는 가상 버퍼
@@ -29,8 +29,8 @@ public class TetrisNetworkCanvas extends JPanel implements Runnable, ComponentLi
 		data = new TetrisData();
 		addComponentListener(this);
 	}
-	public void setTetrisPreview(TetrisPreview preview) {
-		//this.preview = preview;
+	public void setTetrisNetworkPreview(TetrisNetworkPreview preview) {
+		this.preview = preview;
 	}
 	//버퍼 초기 함수
 	public void initBufferd() {
@@ -101,6 +101,7 @@ public class TetrisNetworkCanvas extends JPanel implements Runnable, ComponentLi
 			try {
 				
 				repaint();
+				preview.repaint();
 			} catch(Exception e){ }
 		}
 	}
@@ -108,6 +109,11 @@ public class TetrisNetworkCanvas extends JPanel implements Runnable, ComponentLi
 	public TetrisData getData() {
 		return data;
 	}
+	
+	public void setCurrent(Piece current) {
+		this.current = current;
+	}
+	
 		
 	@Override
 	public void componentResized(ComponentEvent e) {

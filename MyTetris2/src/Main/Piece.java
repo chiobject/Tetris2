@@ -10,7 +10,6 @@ public abstract class Piece {
 	protected TetrisData data;  // 테트리스 내부 데이터
 	protected Point center; // 조각의 중심 좌표
 	protected int type, roteType;
-	protected Sound effectsound = new Sound("sound/blockbottom.wav", 0);
 	public Piece(TetrisData data, int type, int roteType) {
 		r = new int[4];
 		c = new int[4];
@@ -31,7 +30,6 @@ public abstract class Piece {
 		if(getMinY() + y <= 0) { // 게임 종료 상황
 			value = true;
 		}
-		
 		for(int i=0; i < 4; i++) {
 			data.setAt(y + r[i], x + c[i], getType());
 		}
@@ -45,13 +43,15 @@ public abstract class Piece {
 		case 0 : // 아래
 			for(int i=0; i < r.length; i++) {
 				if(data.getAt(y+r[i]+1, x+c[i]) != 0) {
+					System.out.println("아래!");
 					return true;
 				}
 			}
 			break;
 		case 1 : // 왼쪽
 			for(int i=0; i < r.length; i++) {
-				if(data.getAt(y+r[i], x+c[i]-1) != 0) {
+				if(data.getAt(y+r[i], x+c[i] - 1) != 0) {
+					System.out.println("왼쪽!");
 					return true;
 				}
 			}
@@ -59,6 +59,7 @@ public abstract class Piece {
 		case 2 : // 오른쪽
 			for(int i=0; i < r.length; i++) {
 				if(data.getAt(y+r[i], x+c[i] + 1) != 0) {
+					System.out.println("오른쪽!");
 					return true;
 				}
 			}
@@ -112,12 +113,10 @@ public abstract class Piece {
 			if(isOverlap(DOWN) != true) {
 				center.y++;
 			} else {
-				effectsound.play();
 				return true;
 			}
 		} 
 		else {
-				effectsound.play();
 				return true; 
 			}
 		return false;
@@ -142,8 +141,22 @@ public abstract class Piece {
 			rotate4();
 			rotate4();
 			rotate4();
+			if(center.x + getMinX()  < 0 && canmove() == false || // 블록이 좌측 벽에서 회전했을 때 맵 밖으로 넘어가는 경우
+					center.x + getMaxX() +1 > TetrisData.COL && canmove() == false || // 블록이 우측 벽에서 회전했을 때 맵 밖으로 넘어가는 경우
+					(rotate_direct() || isOverlap(0))  // 블록 회전 시 다른 블록과 겹치는 경우
+					|| center.y + getMaxY() + 1 > TetrisData.ROW) {  // 블록이 아래를 뚫는 경우
+				reverse_rotate4();
+				reverse_rotate4();
+				reverse_rotate4();
+			}
 		} else {
 			rotate4();
+			if(center.x + getMinX()  < 0 && canmove() == false || // 블록이 좌측 벽에서 회전했을 때 맵 밖으로 넘어가는 경우
+					center.x + getMaxX() +1 > TetrisData.COL && canmove() == false || // 블록이 우측 벽에서 회전했을 때 맵 밖으로 넘어가는 경우
+					(rotate_direct() || isOverlap(0))  // 블록 회전 시 다른 블록과 겹치는 경우
+					|| center.y + getMaxY() + 1 > TetrisData.ROW) {  // 블록이 아래를 뚫는 경우
+				 reverse_rotate4(); 
+				 System.out.println("어어? 안된다!");}
 		}
 	}
 
@@ -154,6 +167,44 @@ public abstract class Piece {
 			r[i] = temp;
 		}
 	}
+	
+	public void reverse_rotate4() {   // 조각 회전
+		for(int i = 0; i < 4; i++) {
+			int temp = r[i];
+			r[i] = -c[i];
+			c[i] = temp;
+		}
+	}
+	
+	public boolean rotate_direct() { // 블록 회전 시 다른 블록과 좌 우가 겹치는 경우(isoverlap 보다 반경이 1 더 커서 따로 빼냄)
+		int x = getX();
+		int y = getY();
+		// 왼쪽 검사
+		for(int i=0; i < r.length; i++) {
+			if(data.getAt(y+r[i], x+c[i]) != 0) {
+				System.out.println("왼쪽!");
+				return true;
+			}
+		}
+		
+		//오른쪽 검사
+		for(int i=0; i < r.length; i++) {
+			if(data.getAt(y+r[i], x+c[i]) != 0) {
+				System.out.println("오른쪽!");
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	
+	public boolean canmove() {
+		if (isOverlap(RIGHT) || isOverlap(LEFT) || isOverlap(DOWN)){
+			return true;
+		}
+		return false;
+	}
+
 	
 	public String saveNetworkPiece() {
 		String piece =

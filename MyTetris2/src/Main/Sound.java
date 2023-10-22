@@ -20,6 +20,16 @@ public class Sound {
 		} catch(Exception e) {
 			System.err.println("err : " + e);
 		}
+    	// 클립 상태 모니터링을 위한 리스너 추가
+        clip.addLineListener(new LineListener() {
+            @Override
+            public void update(LineEvent event) {
+            	// 소리 재생이 끝나면 클립을 닫음 (단, 루프 중이 아닐 때만)
+                if (event.getType() == LineEvent.Type.STOP && (!clip.isRunning() && !clip.isActive())) {
+                        close();
+                }
+            }
+        });
     }
     // 테트리스 노래 실행
     public void loop() {
@@ -27,18 +37,18 @@ public class Sound {
     }
     
     public void play() {
-            clip.start();
+        clip.start();
     }
-    
-    // 테트리스 소리 초기화
+
     public void stop() {
-        if (clip != null) {  // clip이 null이 아닌 경우에만 실행
-            clip.stop();  // 노래 재생 중지
+        if (clip != null) {
+            clip.stop();
         }
     }
+
     public void close() {
-    	if (clip != null) {  // clip이 null이 아닌 경우에만 실행
-            clip.close();  // 노래 리소스 해제
+        if (clip != null && !clip.isRunning()) {
+            clip.close();
         }
     }
 }

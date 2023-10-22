@@ -26,9 +26,9 @@ public class MyTetris extends JFrame{
 		TetrisNetworkCanvas netCanvas = new TetrisNetworkCanvas();
 		createMenu(tetrisCanvas, netCanvas);
 		TetrisPreview preview = new TetrisPreview(tetrisCanvas.getData());
-		TetrisPreview netPreview = new TetrisPreview(netCanvas.getData());
+		TetrisNetworkPreview netPreview = new TetrisNetworkPreview(netCanvas.getData());
 		tetrisCanvas.setTetrisPreview(preview);
-		netCanvas.setTetrisPreview(netPreview);
+		netCanvas.setTetrisNetworkPreview(netPreview);
 		add(tetrisCanvas);
 		add(preview);
 		add(netCanvas);
@@ -63,7 +63,6 @@ public class MyTetris extends JFrame{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				tetrisCanvas.stop();
-				netCanvas.stop();
 			}
 		});
 		
