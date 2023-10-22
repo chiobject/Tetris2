@@ -15,9 +15,8 @@ public class TetrisClient extends Thread {
 	private  BufferedReader  i;
     private  PrintWriter     o;
     private TetrisNetworkCanvas netCanvas;
-    private TetrisNetworkPreview netPreview;
     private TetrisCanvas tetrisCanvas;
-    private String key, current, preview;
+    private String key, current, preview, hold;
     public TetrisClient(TetrisCanvas tetrisCanvas, TetrisNetworkCanvas netCanvas, String host, int port) {
     	this.tetrisCanvas = tetrisCanvas;
     	this.netCanvas = netCanvas;
@@ -37,10 +36,13 @@ public class TetrisClient extends Thread {
     	if (tetrisCanvas.preview.current != null) {
     		preview = tetrisCanvas.preview.current.saveNetworkPiece();
     	}
+    	if (tetrisCanvas.preview.hold != null) {
+    		hold = tetrisCanvas.preview.hold.saveNetworkPiece();
+    	}
 //    	System.out.println("current :" + current);
 //		System.out.println("send: "+data);
 //    	System.out.println("preview: "+preview);
-		o.println(key + data + ";" + current + ";" + preview);
+		o.println(key + data + ";" + current + ";" + preview + ";" + hold);
     }
     
 	public void run() {
@@ -67,11 +69,13 @@ public class TetrisClient extends Thread {
 						netCanvas.setCurrent(currentPiece);
 						
 						try {
-							System.out.println("헉!:" + parsedData[3]);
 							Piece PreviewPiece = new Bar(new TetrisData());
 							PreviewPiece.loadNetworkPiece(parsedData[3]);
 							netCanvas.preview.current = PreviewPiece;
-							System.out.println(netCanvas.preview.current.getType());
+						
+							Piece HoldPiece = new Bar(new TetrisData());
+							HoldPiece.loadNetworkPiece(parsedData[4]);
+							netCanvas.preview.hold = HoldPiece;
 						}catch(Exception e) {
 							System.out.println("헉!:" + e);
 						}

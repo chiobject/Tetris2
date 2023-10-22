@@ -156,7 +156,7 @@ public abstract class Piece {
 					(rotate_direct() || isOverlap(0))  // 블록 회전 시 다른 블록과 겹치는 경우
 					|| center.y + getMaxY() + 1 > TetrisData.ROW) {  // 블록이 아래를 뚫는 경우
 				 reverse_rotate4(); 
-				 System.out.println("어어? 안된다!");}
+				 System.out.println("어어? 안된다!!");}
 		}
 	}
 

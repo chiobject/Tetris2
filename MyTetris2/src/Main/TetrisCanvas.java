@@ -82,39 +82,42 @@ public class TetrisCanvas extends JPanel implements Runnable, KeyListener, Compo
 	}
 	
 	public void paint(Graphics g) {
+		try {
+			// 화면을 지운다. 지우지 않으면 이전그림이 그대로 남아 잔상이 생김
+			bufferGraphics.clearRect(0, 0, dim.width, dim.height);
 
-		//화면을 지운다. 지우지 않으면 이전그림이 그대로 남아 잔상이 생김
-		bufferGraphics.clearRect(0,0,dim.width,dim.height); 
-		
-		// 쌓인 조각들 그리기
-		for (int i = 0; i < TetrisData.ROW; i++) {
-			for (int k = 0; k < TetrisData.COL; k++) {
-				if (data.getAt(i, k) == 0) {
-					bufferGraphics.setColor(Constant.getColor(data.getAt(i, k)));
-					bufferGraphics.draw3DRect(Constant.margin / 2 + Constant.w * k,
-							Constant.margin / 2 + Constant.w * i, Constant.w, Constant.w, true);
-				} else {
-					bufferGraphics.setColor(Constant.getColor(data.getAt(i, k)));
-					bufferGraphics.fill3DRect(Constant.margin / 2 + Constant.w * k,
-							Constant.margin / 2 + Constant.w * i, Constant.w, Constant.w, true);
+			// 쌓인 조각들 그리기
+			for (int i = 0; i < TetrisData.ROW; i++) {
+				for (int k = 0; k < TetrisData.COL; k++) {
+					if (data.getAt(i, k) == 0) {
+						bufferGraphics.setColor(Constant.getColor(data.getAt(i, k)));
+						bufferGraphics.draw3DRect(Constant.margin / 2 + Constant.w * k,
+								Constant.margin / 2 + Constant.w * i, Constant.w, Constant.w, true);
+					} else {
+						bufferGraphics.setColor(Constant.getColor(data.getAt(i, k)));
+						bufferGraphics.fill3DRect(Constant.margin / 2 + Constant.w * k,
+								Constant.margin / 2 + Constant.w * i, Constant.w, Constant.w, true);
+					}
 				}
 			}
-		}
 
-		// 현재 내려오고 있는 테트리스 조각 그리
-		if(current != null){
-			for(int i = 0; i < 4; i++) {
-				bufferGraphics.setColor(Constant.getColor(current.getType()));
-				bufferGraphics.fill3DRect(Constant.margin/2 + Constant.w * (current.getX()+current.c[i]), 
-						Constant.margin/2 + Constant.w * (current.getY()+current.r[i]), 
-						Constant.w, Constant.w, true);
+			// 현재 내려오고 있는 테트리스 조각 그리
+			if (current != null) {
+				for (int i = 0; i < 4; i++) {
+					bufferGraphics.setColor(Constant.getColor(current.getType()));
+					bufferGraphics.fill3DRect(Constant.margin / 2 + Constant.w * (current.getX() + current.c[i]),
+							Constant.margin / 2 + Constant.w * (current.getY() + current.r[i]), Constant.w, Constant.w,
+							true);
+				}
 			}
+
+			// 가상버퍼(이미지)를 원본 버퍼에 복사
+			g.drawImage(offscreen, 0, 0, this);
+
+			myTetris.refresh();
+		} catch (Exception e) {
+
 		}
-		
-		//가상버퍼(이미지)를 원본 버퍼에 복사
-		g.drawImage(offscreen,0,0,this);
-		
-		myTetris.refresh();
 	}
 
 	public Dimension getPreferredSize(){ // 테트리스 판의 크기 지정
@@ -176,8 +179,7 @@ public class TetrisCanvas extends JPanel implements Runnable, KeyListener, Compo
 						makeNew = true;
 						if(current.copy()){
 							stop();
-							int score = data.getLine() * 175 * Constant.level;
-							JOptionPane.showMessageDialog(this,"게임끝\n점수 : " + score);
+							JOptionPane.showMessageDialog(this,"게임끝\n점수 : " + data.score);
 						}
 						preview.ishold=false;
 						current = null;
@@ -189,8 +191,7 @@ public class TetrisCanvas extends JPanel implements Runnable, KeyListener, Compo
 				Thread.sleep(Constant.interval/Constant.level);
 			} catch(ArrayIndexOutOfBoundsException e) {
 				stop();
-				int score = data.getLine() * 175 * Constant.level;
-				JOptionPane.showMessageDialog(this,"게임끝\n점수 : " + score);
+				JOptionPane.showMessageDialog(this,"게임끝\n점수 : " + data.score);
 			}
 			catch(Exception e){ }
 			
@@ -227,8 +228,7 @@ public class TetrisCanvas extends JPanel implements Runnable, KeyListener, Compo
 				preview.ishold=false;
 				if(current.copy()){
 					stop();
-					int score = data.getLine() * 175 * Constant.level;
-					JOptionPane.showMessageDialog(this,"게임끝\n점수 : " + score);
+					JOptionPane.showMessageDialog(this,"게임끝\n점수 : " + data.score);
 				}
 			}
 			repaint();
@@ -239,8 +239,7 @@ public class TetrisCanvas extends JPanel implements Runnable, KeyListener, Compo
 			makeNew = true;
 			if(current.copy()){
 				stop();
-				int score = data.getLine() * 175 * Constant.level;
-				JOptionPane.showMessageDialog(this,"게임끝\n점수 : " + score);
+				JOptionPane.showMessageDialog(this,"게임끝\n점수 : " + data.score);
 			}
 			preview.ishold=false;
 			current = null;

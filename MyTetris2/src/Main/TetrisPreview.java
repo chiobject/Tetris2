@@ -1,4 +1,5 @@
 package Main;
+import java.awt.Color;
 import java.awt.Graphics;
 
 import javax.swing.JPanel;
@@ -30,8 +31,8 @@ public class TetrisPreview extends JPanel {
 		super.paint(g);
 		
 		// 프리뷰 십자 그리기
-		for(int i = 0; i < 4; i++) {
-			for(int k = 0; k < 4; k++) {
+		for(int i = 0; i < 5; i++) {
+			for(int k = 0; k < 5; k++) {
 				if(data.getAt(i, k) == 0) {
 					g.setColor(Constant.getColor(0));
 					g.draw3DRect(Constant.margin/2 + Constant.w * k,
@@ -40,12 +41,13 @@ public class TetrisPreview extends JPanel {
 				}
 			}
 		}
+
 		//System.out.println(current);
 		// 프리뷰 블록 그리기
 		if(current != null){
 			for(int i = 0; i < 4; i++) {
 				g.setColor(Constant.getColor(current.getType()));
-				g.fill3DRect(Constant.margin/2 + Constant.w * (1+current.c[i]), 
+				g.fill3DRect(Constant.margin/2 + Constant.w * (2+current.c[i]), 
 						Constant.margin/2 + Constant.w * (2+current.r[i]), 
 						Constant.w, Constant.w, true);
 			}
@@ -53,8 +55,8 @@ public class TetrisPreview extends JPanel {
 		
 		
 		// hold 십자 그리기
-		for(int i = 0; i < 4; i++) {
-			for(int k = 0; k < 4; k++) {
+		for(int i = 0; i < 5; i++) {
+			for(int k = 0; k < 5; k++) {
 				if(data.getAt(i, k) == 0) {
 					g.setColor(Constant.getColor(0));
 					g.draw3DRect(Constant.margin/2 + Constant.w * k ,
@@ -69,11 +71,14 @@ public class TetrisPreview extends JPanel {
 		if(hold != null){
 			for(int i = 0; i < 4; i++) {
 				g.setColor(Constant.getColor(hold.getType()));
-				g.fill3DRect(Constant.margin/2 + Constant.w * (1+hold.c[i]), 
+				g.fill3DRect(Constant.margin/2 + Constant.w * (2+hold.c[i]), 
 						Constant.margin/2 + Constant.w * (2+hold.r[i]) + 200, 
 						Constant.w, Constant.w, true);
 			}
 		}
-		
+		System.out.println("score : " +data.score);
+		System.out.println("getLine() : " +data.getLine());
+		g.setColor(Color.PINK);
+		g.drawString("Score : " + data.getScore(), 50, 400);
 	}
 }

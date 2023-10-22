@@ -3,10 +3,12 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JPanel;
 
 public class MyTetris extends JFrame{
 
@@ -16,7 +18,43 @@ public class MyTetris extends JFrame{
 	private static final long serialVersionUID = 1L;
 	private TetrisClient client = null;
 	JMenuItem startItem;
+	
 	public MyTetris() {
+		JFrame frame = new JFrame("모드 선택");
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+		JPanel panel = new JPanel();
+		JButton button1 = new JButton("노말");
+		JButton button2 = new JButton("반전");
+
+		// 버튼 1에 액션 추가
+		button1.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// 버튼 1이 클릭되었을 때 실행할 코드 작성
+				NormalTetris();
+				frame.dispose();
+			}
+		});
+
+		// 버튼 2에 액션 추가
+		button2.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+
+		panel.add(button1);
+		panel.add(button2);
+
+		frame.add(panel);
+		frame.setSize(300, 100);
+		frame.setLocationRelativeTo(null);
+		frame.setVisible(true);
+	   
+	}
+	
+	public void NormalTetris() {
 		setTitle("테트리스");
 		setSize(320*4, 600);
 		
@@ -34,11 +72,11 @@ public class MyTetris extends JFrame{
 		add(netCanvas);
 		add(netPreview);
 		
+		setLocationRelativeTo(null);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		pack();
 		setVisible(true);
 	}
-	
 	public void createMenu(TetrisCanvas tetrisCanvas, TetrisNetworkCanvas netCanvas) {
 		JMenuBar mb = new JMenuBar();
 		setJMenuBar(mb);
@@ -46,15 +84,30 @@ public class MyTetris extends JFrame{
 		mb.add(gameMenu);
 		
 		JMenuItem startItem = new JMenuItem("시작");
+		JMenuItem restartItem = new JMenuItem("재시작");
 		JMenuItem exitItem = new JMenuItem("종료");
-		gameMenu.add(startItem);
-		gameMenu.add(exitItem);
+		
 		startItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				tetrisCanvas.start();
 				netCanvas.start();
-//				startItem.setEnabled(false);
+				gameMenu.remove(startItem);
+				gameMenu.insert(restartItem, 0);
+				restartItem.setEnabled(true);
+			}
+		});
+		
+		restartItem.setEnabled(false);
+		restartItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					tetrisCanvas.worker.interrupt();
+					tetrisCanvas.stop();
+			        tetrisCanvas.start();
+			    } catch (Exception e1) {
+			    }
 			}
 		});
 		
@@ -65,6 +118,9 @@ public class MyTetris extends JFrame{
 				tetrisCanvas.stop();
 			}
 		});
+		
+		gameMenu.add(startItem);
+		gameMenu.add(exitItem);
 		
 		JMenu networkMenu = new JMenu("네트워크");
 		mb.add(networkMenu);
@@ -105,13 +161,12 @@ public class MyTetris extends JFrame{
 			}
 		});
 	}
-	public static void main(String[] args) {
-		new MyTetris();
-	}
-
+	
 	public void refresh() {
 		if(client != null)
 			client.send();
 	}
-
+	public static void main(String[] args) {
+		new MyTetris();
+	}
 }

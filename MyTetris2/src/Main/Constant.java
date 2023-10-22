@@ -5,7 +5,7 @@ public class Constant {
 	public static final int w = 25;
 	public static final int margin = 20;
 	public static final int     interval = 2000;
-	public static int     	level = 2;
+	public static int     	level = 1;
 	private static Color[] colors = null;  // 테트리스 배경 및 조각 색
 	
 	public static Color getColor(int index) {

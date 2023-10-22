@@ -4,6 +4,7 @@ public class TetrisData {
 	public static final int COL = 10;
 	private int data[][];  // ROW x COL 의 배열
 	private int line;      // 지운 줄 수
+	protected int score;
 	
 	public TetrisData() {
 		data = new int[ROW][COL];
@@ -42,6 +43,9 @@ public class TetrisData {
 			}
 			if(done){
 				line++;
+				if((Constant.level + line) % 10 == 0 ) {
+					Constant.level += 1;
+				}
 				for(int x = i; x > 0; x--) {
 					for(int y = 0; y < COL; y++){
 						data[x][y] = data[x-1][y];
@@ -96,5 +100,10 @@ public class TetrisData {
 		}
 		String result = output.toString();
 		return result;
+	}
+	
+	public int getScore() {
+		score = getLine() * 175 * Constant.level;
+		return score;
 	}
 }
