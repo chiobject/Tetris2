@@ -201,14 +201,14 @@ public abstract class Piece {
 			rotate4();
 			if (data.mode == 0) {
 				if (center.x + getMinX() < 0 && canmove() == false || // 블록이 좌측 벽에서 회전했을 때 맵 밖으로 넘어가는 경우
-						center.x + getMaxX() + 1 > TetrisData.COL && canmove() == false || // 블록이 우측 벽에서 회전했을 때 맵 밖으로 넘어가는 경우
+						center.x + getMaxX() > TetrisData.COL && canmove() == false || // 블록이 우측 벽에서 회전했을 때 맵 밖으로 넘어가는 경우
 						(rotate_direct() || isOverlap(0)) // 블록 회전 시 다른 블록과 겹치는 경우
 						|| center.y + getMaxY() + 1 > TetrisData.ROW) { // 블록이 아래를 뚫는 경우
 					reverse_rotate4();
 				}
 			} else if (data.mode == 1) {
 				if (center.x + getMinX() < 0 && canmove() == false || // 블록이 좌측 벽에서 회전했을 때 맵 밖으로 넘어가는 경우
-						center.x + getMaxX() + 1 > TetrisData.COL && canmove() == false || // 블록이 우측 벽에서 회전했을 때 맵 밖으로
+						center.x + getMaxX() > TetrisData.COL && canmove() == false || // 블록이 우측 벽에서 회전했을 때 맵 밖으로
 																							// 넘어가는 경우
 						(rotate_direct() || isOverlap(0)) // 블록 회전 시 다른 블록과 겹치는 경우
 						|| center.y + getMinY() + 1 < 0) { // 블록이 아래를 뚫는 경우
