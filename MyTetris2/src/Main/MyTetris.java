@@ -4,12 +4,10 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.JPanel;
 
 import Tetris.*;
 
@@ -21,43 +19,6 @@ public class MyTetris extends JFrame{
 	private TetrisClient originalclient = null;
 	JMenuItem startItem;
 	
-	public MyTetris() {
-		JFrame frame = new JFrame("모드 선택");
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-		JPanel panel = new JPanel();
-		JButton button1 = new JButton("노말");
-		JButton button2 = new JButton("반전");
-
-		// 버튼 1에 액션 추가
-		button1.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// 버튼 1이 클릭되었을 때 실행할 코드 작성
-				NormalTetris();
-				frame.dispose();
-			}
-		});
-
-		// 버튼 2에 액션 추가
-		button2.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				ReverseTetris();
-				frame.dispose();
-			}
-		});
-
-		panel.add(button1);
-		panel.add(button2);
-
-		frame.add(panel);
-		frame.setSize(300, 100);
-		frame.setLocationRelativeTo(null);
-		frame.setVisible(true);
-	   
-	}
-	
 	public void NormalTetris() {
 		setTitle("테트리스");
 		setSize(320*4, 600);
@@ -66,7 +27,7 @@ public class MyTetris extends JFrame{
 		setLayout(layout);
 		TetrisCanvas tetrisCanvas = new TetrisCanvas(this);
 		TetrisNetworkCanvas netCanvas = new TetrisNetworkCanvas();
-		OriginalcreateMenu(tetrisCanvas, netCanvas);
+		createMenu(tetrisCanvas, netCanvas);
 		TetrisPreview preview = new TetrisPreview(tetrisCanvas.getData());
 		TetrisNetworkPreview netPreview = new TetrisNetworkPreview(netCanvas.getData());
 		tetrisCanvas.setTetrisPreview(preview);
@@ -91,7 +52,7 @@ public class MyTetris extends JFrame{
 		setLayout(layout);
 		TetrisCanvas tetrisCanvas = new TetrisCanvas(this);
 		TetrisNetworkCanvas netCanvas = new TetrisNetworkCanvas();
-		OriginalcreateMenu(tetrisCanvas, netCanvas);
+		createMenu(tetrisCanvas, netCanvas);
 		TetrisPreview preview = new TetrisPreview(tetrisCanvas.getData());
 		TetrisNetworkPreview netPreview = new TetrisNetworkPreview(netCanvas.getData());
 		tetrisCanvas.setTetrisPreview(preview);
@@ -108,7 +69,7 @@ public class MyTetris extends JFrame{
 		setVisible(true);
 	}
 	
-	public void OriginalcreateMenu(TetrisCanvas tetrisCanvas, TetrisNetworkCanvas netCanvas) {
+	public void createMenu(TetrisCanvas tetrisCanvas, TetrisNetworkCanvas netCanvas) {
 		JMenuBar mb = new JMenuBar();
 		setJMenuBar(mb);
 		JMenu gameMenu = new JMenu("게임");
@@ -145,7 +106,7 @@ public class MyTetris extends JFrame{
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				tetrisCanvas.stop();
+				System.exit(0);
 			}
 		});
 		
